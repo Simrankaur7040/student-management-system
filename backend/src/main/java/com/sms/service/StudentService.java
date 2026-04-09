@@ -1,13 +1,12 @@
 package com.sms.service;
 
-import com.sms.exception.ResourceNotFoundException;
-import com.sms.exception.DuplicateResourceException;
 import com.sms.model.Student;
 import com.sms.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class StudentService {
@@ -18,7 +17,7 @@ public class StudentService {
     // CREATE
     public Student createStudent(Student student) {
         if (studentRepository.existsByEmail(student.getEmail())) {
-            throw new DuplicateResourceException("Student with email " + student.getEmail() + " already exists");
+            throw new IllegalArgumentException("Student with email " + student.getEmail() + " already exists");
         }
         return studentRepository.save(student);
     }
@@ -31,7 +30,7 @@ public class StudentService {
     // READ BY ID
     public Student getStudentById(Long id) {
         return studentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Student not found with id: " + id));
     }
 
     // UPDATE
